@@ -1,6 +1,6 @@
 {
   "name": "@memosr/plugin-base-gas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "elizaOS plugin: live Base gas, transaction cost in USD, ready-to-sign fees, cross-chain comparison and best time to transact. Paid per call in USDC over x402, no API key.",
   "type": "module",
   "main": "dist/index.js",

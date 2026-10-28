@@ -47,6 +47,13 @@ test("parses gas limits and hours from plain words", () => {
   assert.equal(parseGasLimit("mint an NFT"), 85000);
   assert.equal(parseGasLimit("gas now?"), null);
   assert.equal(parseGasLimit("send 100 USDC"), 65000);
+  // Token amounts are not gas limits.
+  assert.equal(parseGasLimit("send 50,000 USDC"), 65000);
+  assert.equal(parseGasLimit("swap 25000 USDC for ETH"), 180000);
+  assert.equal(parseGasLimit("what does it cost to mint 30000 NFTs"), 85000);
+  assert.equal(parseGasLimit("gas limit 250000"), 250000);
+  assert.equal(parseGasLimit("gas limit: 300,000"), 300000);
+  assert.equal(parseGasLimit("price 1,500,000 units of gas"), 1500000);
   assert.equal(parseHours("last 6 hours"), 6);
   assert.equal(parseHours("past 3 days"), 72);
   assert.equal(parseHours("this week"), 168);

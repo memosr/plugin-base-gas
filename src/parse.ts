@@ -14,9 +14,21 @@ const PRESETS: [RegExp, number][] = [
   [/\b(erc-?20|token transfer|(send|transfer)\b.*\b(usdc|usdt|dai|tokens?))\b/i, 65_000],
 ];
 
-/** Explicit gas limit ("180000 gas"), else a preset for the named operation, else null (API default). */
+/**
+ * Gas limit for the request. A number counts only when the message ties it to
+ * gas ("250,000 gas", "gas limit 250000"): amounts like "send 50,000 USDC"
+ * must not be read as a gas limit. Otherwise a preset for the named
+ * operation, else null (the API default, a plain transfer).
+ */
 export function parseGasLimit(text: string): number | null {
-  for (const m of text.matchAll(/\b(\d[\d,_]{4,11})\b/g)) {
+  const num = String.raw`(\d[\d,_]{4,11})`;
+  const patterns = [
+    new RegExp(`\\b${num}\\s*(?:units of\\s*)?gas\\b`, "i"),
+    new RegExp(`\\bgas\\s*(?:limit|units)?\\s*(?:of|=|:)?\\s*${num}\\b`, "i"),
+  ];
+  for (const pattern of patterns) {
+    const m = text.match(pattern);
+    if (!m) continue;
     const n = Number(m[1].replace(/[,_]/g, ""));
     if (Number.isInteger(n) && n >= MIN_GAS_LIMIT && n <= MAX_GAS_LIMIT) return n;
   }
